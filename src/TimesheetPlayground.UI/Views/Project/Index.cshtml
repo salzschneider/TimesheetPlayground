@@ -1,0 +1,64 @@
+﻿@model TimesheetPlayground.UI.Models.ProjectViewModel
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            @Model.SuccessMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <h4>Creating new Project</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-8">
+            <form asp-controller="Project" asp-action="Add" method="post">
+                <div class="form-inline mb-2">
+                    <input asp-for="Name" class="form-control mr-2 col-sm-6" placeholder="New project name" />
+                    <input type="submit" value="Add project" class="btn btn-primary" />
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </form>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Existing projects</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-8">
+            @if (Model.AllProjects != null && Model.AllProjects.Count > 0)
+            {
+            <form asp-controller="Project" asp-action="Update" method="post">
+                @for (int i = 0; i < Model.AllProjects.Count; i++)
+                {
+                    <div class="form-inline mb-2">
+                        <input asp-for="@Model.AllProjects[i].Name" class="form-control mr-2 col-sm-6" value="@Model.AllProjects[i].Name" />
+                        <input type="hidden" asp-for="@Model.AllProjects[i].Id" value="@Model.AllProjects[i].Id" />
+                        <a class="btn btn-danger" asp-controller="Project" asp-action="Delete" asp-route-id="@Model.AllProjects[i].Id" role="button">Delete</a>
+                    </div>
+                }
+
+                <div class="form-inline mb-2">
+                    <button type="submit" class="btn btn-warning mr-2">Change</button>
+                </div>
+            </form>
+            }
+        </div>
+    </div>
+</div>

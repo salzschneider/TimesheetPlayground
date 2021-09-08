@@ -1,0 +1,192 @@
+﻿@model TimesheetPlayground.UI.Models.TimesheetViewModel
+@using TimesheetPlayground.UI.Common
+@using Microsoft.AspNetCore.WebUtilities
+@using TimesheetPlayground.UI.Models.Enum
+
+@{
+    ViewData["Title"] = "Timesheets";
+    
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"] @(Model?.TimesheetDO?.User != null ? $" - {Model.TimesheetDO.User.Name}" : "" )</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (UserClaim.IsManager(User))
+    {
+        <h4 class="mt-4">Manager Actions</h4>
+        <hr />
+
+        @if (Model.Users != null)
+        {
+            <div class="form-group mb-2">
+                <label for="userSelector" class="col-form-label">Please, select a user: </label>
+                <select id="userSelector" class="form-control" onchange="location = this.value;">
+                    @foreach (var user in Model.Users)
+                    {
+                        if (Model.UserId == @user.Id)
+                        {
+                            <option selected="selected" value="@QueryHelpers.AddQueryString("/", "userId", user.Id.ToString())">@user.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@QueryHelpers.AddQueryString("/", "userId", user.Id.ToString())">@user.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        }
+        else
+        {
+            <h6 class="mt-2">There is no Employee created</h6>
+        }
+    }
+
+    <div class="row">
+        <div class="col-lg-12">
+            @if (Model.AllUserTimesheetDOs != null && Model.AllUserTimesheetDOs.Count > 0)
+            {
+                <div class="form-group mb-2">
+                    <label for="timesheetSelector" class="col-form-label">Please, select a timesheet: </label>
+                    <select id="timesheetSelector" class="form-control" onchange="location = this.value;">
+                        @foreach (var timesheet in Model.AllUserTimesheetDOs)
+                        {
+                            if (Model.TimesheetDO.Id == @timesheet.Id)
+                            {
+                                <option selected="selected" value="@QueryHelpers.AddQueryString("/", TimesheetPlayground.UI.Common.QueryString.GetTimesheetQueryString(@Model.UserId, @timesheet.Id))">@string.Format("{0:yyyy-MM}", @timesheet.StartDate)</option>
+                            }
+                            else
+                            {
+                                <option value="@QueryHelpers.AddQueryString("/", TimesheetPlayground.UI.Common.QueryString.GetTimesheetQueryString(@Model.UserId, @timesheet.Id))">@string.Format("{0:yyyy-MM}", @timesheet.StartDate)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            }
+            else
+            {
+                <h6 class="mt-2">There is no timesheet created</h6>
+            }
+
+        </div>
+    </div>
+
+    <h4 class="mt-4">Actions</h4>
+    <hr />
+
+    @if (Model.TimesheetDO != null)
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="form-inline mb-2">
+                    @foreach (var status in (StatusEnum[])Enum.GetValues(typeof(StatusEnum)))
+                    {
+                        <a class="btn mr-2
+                            @(status == Model.TimesheetDO.Status ? "btn-secondary" : status == StatusEnum.Draft ? "btn-info" : status == StatusEnum.Submitted ? "btn-warning" : "btn-success")"
+                            asp-controller="Timesheet" asp-route-userId="@Model.UserId" asp-action="ChangeStatus" asp-route-status="@Convert.ToInt32(status)" asp-route-timesheetId="@Model.TimesheetDO.Id" asp-route-weekNumber="@Model.WeekNumber" role="button">@status</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h6 class="mt-2">There is no timesheet created</h6>
+    }
+
+    <h4 class="mt-4">Table timesheet @(Model?.TimesheetDO?.StartDate != null ? " - " + string.Format("{0:yyyy-MM}", Model.TimesheetDO.StartDate) : "")</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-12">
+            @if (Model.TimesheetDO != null)
+            {
+                var weekNumberOfMonth = WorkDayHandler.GetWeekNumberOfMonth(Model.TimesheetDO.StartDate);
+
+                <div class="form-inline mb-2">
+                    @for (int i = 1; i <= weekNumberOfMonth; i++)
+                    {
+                        <a class="btn mr-2 @(Model.WeekNumber == i ? "btn-secondary" : "btn-primary")" asp-controller="Timesheet" asp-action="Index" asp-route-userId="@Model.UserId" asp-route-timesheetId="@Model.TimesheetDO.Id" asp-route-weekNumber="@i" role="button">@i . week </a>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <form asp-controller="Timesheet" asp-action="Update" asp-route-userId="@Model.UserId" asp-route-weekNumber="@Model.WeekNumber" method="post">
+                        <table class="table timesheetTable table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"></th>
+                                    @foreach (var workedHour in @Model.TimesheetDO.WorkedHours.Where(t => t.ProjectId == Model.AllProjectDOs.First().Id))
+                                    {
+                                        <th class="text-center">
+                                            <span>@workedHour.WorkDay.</span>
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{bool IsReadonly = UserClaim.IsManager(User) || Model.TimesheetDO.Status == StatusEnum.Approved || Model.TimesheetDO.Status == StatusEnum.Submitted;}
+
+                                @foreach (var project in Model.AllProjectDOs)
+                                {
+                                    <tr>
+                                        <td class="font-weight-bold align-middle pr-2">@project.Name</td>
+                                        @for (int i = 0; i < Model.TimesheetDO.WorkedHours.Count; i++)
+                                        {
+                                            if (@Model.TimesheetDO.WorkedHours[i].ProjectId == project.Id)
+                                            {
+                                                <td>
+                                                    @if (@Model.TimesheetDO.WorkedHours[i].IsWeekend == false)
+                                                    {
+                                                        @if (IsReadonly)
+                                                        {
+                                                            <input readonly class="form-control" asp-for="TimesheetDO.WorkedHours[i].Hours" value="@Model.TimesheetDO.WorkedHours[i].Hours" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input class="form-control" asp-for="TimesheetDO.WorkedHours[i].Hours" value="@Model.TimesheetDO.WorkedHours[i].Hours" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <input class="form-control" value="" disabled />
+
+                                                    }
+                                                    <input asp-for="TimesheetDO.WorkedHours[i].WorkDay" type="hidden" />
+                                                    <input asp-for="TimesheetDO.WorkedHours[i].ProjectId" type="hidden" />
+                                                </td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <input asp-for="TimesheetDO.Status" type="hidden" />
+                        <input asp-for="TimesheetDO.Id" type="hidden" />
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </form>
+                </div>
+            }
+            else
+            {
+                <h6 class="mt-2">There is no timesheet created</h6>
+            }
+
+        </div>
+    </div>
+</div>
