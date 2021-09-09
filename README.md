@@ -14,8 +14,8 @@
 
 - XUnit 2.4
 
-**Test project**
-- Database: MSSQL Server - Express 15.x
+**Database**
+- MSSQL Server - Express 15.x
 
 ## Required NuGet Packages
 
