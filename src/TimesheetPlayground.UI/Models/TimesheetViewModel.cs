@@ -12,6 +12,8 @@ namespace TimesheetPlayground.UI.Models
     {
         public int UserId { get; set; }
 
+        public string Username { get; set; }
+
         public TimesheetDO TimesheetDO { get; set; }
 
         public List<TimesheetDO> AllUserTimesheetDOs { get; set; } = new List<TimesheetDO>();

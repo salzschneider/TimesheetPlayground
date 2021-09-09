@@ -101,7 +101,9 @@ namespace TimesheetPlayground.UI.BLL
                 throw new ArgumentException("Submitted or approved timesheet can't be updated");
             }
 
-            if (timesheetDO.WorkedHours.Any(t => t.Hours > 24))
+            var workedHoursForDay = timesheetDO.WorkedHours.GroupBy(w => w.WorkDay).Select(d => d.Sum(h => h.Hours)).ToList();
+
+            if (workedHoursForDay.Any(h => h > 24))
             {
                 throw new ArgumentException("Maximum 24 hours can be logged for a day");
             }

@@ -14,13 +14,16 @@
 
 - XUnit 2.4
 
+**Test project**
+- Database: MSSQL Server - Express 15.x
+
 ## Required NuGet Packages
 
 - Entity Famework Core 5
 - Automapper 8.1
 
 ## Install
-- Create a new database (TimesheetPlayground)
+- Create a new database (TimesheetPlayground) 
 - Execute the build SQL found in root database folder (database.sql)
 - Set the connection string found in TimesheetPlaygroundContext.cs
 - Build the application

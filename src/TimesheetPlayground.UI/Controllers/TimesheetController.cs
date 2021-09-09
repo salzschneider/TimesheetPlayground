@@ -49,19 +49,25 @@ namespace TimesheetPlayground.UI.Controllers
         {
             var timesheetViewModel = new TimesheetViewModel();
             int userClaimId;
+            string userName = "";
 
             if (UserClaim.IsManager(User))
             {
-                userClaimId = Convert.ToInt32((await userService.GetUserByIdAsync(userId))?.Id);
+                var user = await userService.GetUserByIdAsync(userId);
+                userClaimId = Convert.ToInt32(user?.Id);
+                userName = user?.Name;
 
-                if(userClaimId == 0)
+                if (userClaimId == 0)
                 {
-                    userClaimId = (await userService.GetFirstUserAsync()).Id;
+                    var firstUser = await userService.GetFirstUserAsync();
+                    userClaimId = firstUser.Id;
+                    userName = firstUser.Name;
                 }
             }
             else
             {
                 userClaimId = Convert.ToInt32(UserClaim.GetUserId(User));
+                userName = UserClaim.GetUserName(User);
             }
 
             if(weekNumber < 1 || weekNumber > 6)
@@ -118,6 +124,8 @@ namespace TimesheetPlayground.UI.Controllers
                 {
                     timesheetViewModel.Users = (await userService.GetAllUsersAsync()).Where(u => u.Role == RoleEnum.Employee).ToList();
                 }
+
+                timesheetViewModel.Username = userName;
             }
 
             return View(timesheetViewModel);
