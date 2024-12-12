@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using TimesheetPlayground.UI.Models.Enum;
 using TimesheetPlayground.UI.Models.DTO;
 using System.Globalization;
 
@@ -24,7 +20,7 @@ namespace TimesheetPlayground.UI.Common
             var firstDay = new DateTime(date.Year, date.Month, 1);
             var lastDay = firstDay.AddMonths(1).AddDays(-1);
 
-            List<DateTime> resultList = new List<DateTime>();
+            List<DateTime> resultList = [];
 
             for(DateTime i = firstDay; i <= lastDay; i = i.AddDays(1))
             {
@@ -42,7 +38,7 @@ namespace TimesheetPlayground.UI.Common
             var firstDay = new DateTime(date.Year, date.Month, 1);
             var lastDay = firstDay.AddMonths(1).AddDays(-1);
 
-            List<WorkedHourDO> resultList = new List<WorkedHourDO>();
+            List<WorkedHourDO> resultList = [];
 
             foreach (var projectId in allProjectIds)
             {
@@ -54,7 +50,7 @@ namespace TimesheetPlayground.UI.Common
                         ProjectId = projectId,
                         Hours = 0,
                         WorkDay = i.Day,
-                        IsWeekend = i.DayOfWeek == DayOfWeek.Saturday || i.DayOfWeek == DayOfWeek.Sunday ? true : false,
+                        IsWeekend = i.DayOfWeek == DayOfWeek.Saturday || i.DayOfWeek == DayOfWeek.Sunday,
                     });
                 }
             }    
@@ -66,7 +62,7 @@ namespace TimesheetPlayground.UI.Common
         {
             var weekDays = GetWeekdaysOfMonth(date);
 
-            List<WorkedHourDO> resultList = new List<WorkedHourDO>();
+            List<WorkedHourDO> resultList = [];
             var firstWeek = weekDays.First().WeekNumber;
 
             foreach (var projectId in allProjectIds)
@@ -79,7 +75,7 @@ namespace TimesheetPlayground.UI.Common
                         ProjectId = projectId,
                         Hours = 0,
                         WorkDay = weekday.Date.Day,
-                        IsWeekend = weekday.Date.DayOfWeek == DayOfWeek.Saturday || weekday.Date.DayOfWeek == DayOfWeek.Sunday ? true : false,
+                        IsWeekend = weekday.Date.DayOfWeek == DayOfWeek.Saturday || weekday.Date.DayOfWeek == DayOfWeek.Sunday,
                     });
                 }
             }

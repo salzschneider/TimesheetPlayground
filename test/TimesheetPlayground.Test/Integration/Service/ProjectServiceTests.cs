@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using TimesheetPlayground.UI.BLL;
 using TimesheetPlayground.UI.Models.DTO;
-using TimesheetPlayground.UI.Models.Enum;
 using System.Data;
 
 namespace TimesheetPlayground.Test.Integration.Service
@@ -15,7 +13,7 @@ namespace TimesheetPlayground.Test.Integration.Service
     {
         private readonly ProjectService projectService;
 
-        private void AssertAllFields(ProjectDO expected, ProjectDO actual)
+        private static void AssertAllFields(ProjectDO expected, ProjectDO actual)
         {
             Assert.Equal(expected.Name, actual.Name);
         }
@@ -26,17 +24,16 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         public static IEnumerable<object[]> ValidProjectDOs =>
-            new List<object[]>()
-            {
+            [
                 new object[]{ new ProjectDO() 
                 { 
                     Name = "ProjectName" + Guid.NewGuid().ToString(),
                 }},
-            };
+            ];
 
         [Theory]
         [MemberData(nameof(ValidProjectDOs))]
-        public async void InsertProjectAsync_ValidProjectDO_ReturnNewProjectDO(ProjectDO expected)
+        public async Task InsertProjectAsync_ValidProjectDO_ReturnNewProjectDO(ProjectDO expected)
         {
             // arrange, act
             var actual = await projectService.InsertProjectAsync(expected);
@@ -47,7 +44,7 @@ namespace TimesheetPlayground.Test.Integration.Service
 
         [Theory]
         [MemberData(nameof(ValidProjectDOs))]
-        public async void InsertProjectAsync_ProjectWithExistingName_ThrowException(ProjectDO projectDO)
+        public async Task InsertProjectAsync_ProjectWithExistingName_ThrowException(ProjectDO projectDO)
         {
             // arrange
             var actual = await projectService.InsertProjectAsync(projectDO);
@@ -58,7 +55,7 @@ namespace TimesheetPlayground.Test.Integration.Service
 
         [Theory]
         [MemberData(nameof(ValidProjectDOs))]
-        public async void GetAllProjectsAsync_ValidProjectDO_ReturnProjectListWithNewProjectDO(ProjectDO projectDO)
+        public async Task GetAllProjectsAsync_ValidProjectDO_ReturnProjectListWithNewProjectDO(ProjectDO projectDO)
         {
             // arrange
             var expected = await projectService.InsertProjectAsync(projectDO);
@@ -74,7 +71,7 @@ namespace TimesheetPlayground.Test.Integration.Service
 
         [Theory]
         [MemberData(nameof(ValidProjectDOs))]
-        public async void DeleteProjectAsync_ValidProject_DeletedProject(ProjectDO projectDO)
+        public async Task DeleteProjectAsync_ValidProject_DeletedProject(ProjectDO projectDO)
         {
             // arrange
             var actual = await projectService.InsertProjectAsync(projectDO);
@@ -88,7 +85,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void DeleteProjectAsync_DeletedProject_NoException()
+        public async Task DeleteProjectAsync_DeletedProject_NoException()
         {
             // arrange 
             await projectService.DeleteProjectAsync(-1);

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
@@ -18,15 +16,18 @@ namespace TimesheetPlayground.DAL.Entities
         }
 
         public virtual DbSet<Project> Projects { get; set; }
+
         public virtual DbSet<Timesheet> Timesheets { get; set; }
+
         public virtual DbSet<User> Users { get; set; }
+
         public virtual DbSet<WorkedHour> WorkedHours { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-9LMUC9L\\SQLEXPRESS;Database=TimesheetPlayground;User Id=TSPlayDBUser;Password=aYnAkvAB3IhBg41bxex6");
+                optionsBuilder.UseSqlServer("Server=ASUS-WORK\\SQLEXPRESS;Database=TimesheetPlayground;User Id=TSPlayDBUser;Password=aYnAkvAB3IhBg41bxex6;TrustServerCertificate=True");
             }
         }
 

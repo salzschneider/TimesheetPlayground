@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using TimesheetPlayground.UI.BLL;
@@ -18,21 +17,20 @@ namespace TimesheetPlayground.Test.Integration.Service
 
         private static DateTime lastStartDate;
 
-        private void AssertAllFields(TimesheetDO expected, TimesheetDO actual)
+        private static void AssertAllFields(TimesheetDO expected, TimesheetDO actual)
         {
             Assert.Equal(expected.UserId, actual.UserId);
             Assert.Equal(expected.Status, actual.Status);
-            Assert.True(DateTime.Compare(actual.StartDate.Date, expected.StartDate.Date) == 0);
+            Assert.Equal(0, DateTime.Compare(actual.StartDate.Date, expected.StartDate.Date));
         }
 
-        private DateTime GetLastStartDate()
+        private static DateTime GetLastStartDate()
         {
-            using (TimesheetPlaygroundContext dbContext = new TimesheetPlaygroundContext())
-            {
-                var last = dbContext.Timesheets.OrderBy(t => t.StartDate).LastOrDefault();
+            using TimesheetPlaygroundContext dbContext = new();
 
-                return last != null ? last.StartDate : new DateTime(2021, 3, 1);
-            }
+            var last = dbContext.Timesheets.OrderBy(t => t.StartDate).LastOrDefault();
+
+            return last != null ? last.StartDate : new DateTime(2021, 3, 1);
         }
 
         public TimehseetServiceTests()
@@ -42,18 +40,17 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         public static IEnumerable<object[]> ValidTimesheetDOs =>
-            new List<object[]>()
-            {
+            [
                 new object[]{ new TimesheetDO()
                 {
                     UserId = 1,
                     Status = StatusEnum.Draft,
                 }},
-            };
+            ];
 
         [Theory]
         [MemberData(nameof(ValidTimesheetDOs))]
-        public async void InsertTimesheetAsync_ValidTimesheetDO_ReturnNewTimehseetDO(TimesheetDO expected)
+        public async Task InsertTimesheetAsync_ValidTimesheetDO_ReturnNewTimehseetDO(TimesheetDO expected)
         {
             // arrange
             lastStartDate = expected.StartDate = lastStartDate.AddDays(31);
@@ -67,7 +64,7 @@ namespace TimesheetPlayground.Test.Integration.Service
 
         [Theory]
         [MemberData(nameof(ValidTimesheetDOs))]
-        public async void GetTimesheetsById_ValidTimesheetId_ReturnTimesheet(TimesheetDO timesheetDO)
+        public async Task GetTimesheetsById_ValidTimesheetId_ReturnTimesheet(TimesheetDO timesheetDO)
         {
             // arrange
             lastStartDate = timesheetDO.StartDate = lastStartDate.AddDays(31);
@@ -82,7 +79,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetTimesheetsById_InvalidTimesheetId_ReturnNull()
+        public async Task GetTimesheetsById_InvalidTimesheetId_ReturnNull()
         {
             // arrange, act
             var actual = await timesheetService.GetTimesheetsById(-1);
@@ -92,14 +89,14 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetTimesheetsByUser_InvalidTimesheetId_ReturnEmptyList()
+        public async Task GetTimesheetsByUser_InvalidTimesheetId_ReturnEmptyList()
         {
             // arrange, act
             var actual = await timesheetService.GetTimesheetsByUser(-1);
 
             // assert
             Assert.NotNull(actual);
-            Assert.False(actual.Any());
+            Assert.Empty(actual);
         }
     }
 }

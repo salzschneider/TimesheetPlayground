@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using TimesheetPlayground.UI.BLL;
 using TimesheetPlayground.UI.Models.DTO;
 using TimesheetPlayground.UI.Models.Enum;
+using System.Threading.Tasks;
 
 namespace TimesheetPlayground.Test.Integration.Service
 {
@@ -35,7 +32,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetUserByIdAsync_ValidUserId_ValidUserDO()
+        public async Task GetUserByIdAsync_ValidUserId_ValidUserDO()
         {
             // arrange, act
             var actual = await userService.GetUserByIdAsync(storedUser.Id);
@@ -45,7 +42,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetUserByIdAsync_InvalidUserId_ReturnNull()
+        public async Task GetUserByIdAsync_InvalidUserId_ReturnNull()
         {
             // arrange, act
             var actual = await userService.GetUserByIdAsync(-1);
@@ -55,7 +52,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetUserByNamePasswordAsync_ValidUserNameAndPassword_ValidUserDO()
+        public async Task GetUserByNamePasswordAsync_ValidUserNameAndPassword_ValidUserDO()
         {
             // arrange, act
             var actual = await userService.GetUserByNamePasswordAsync(storedUser.Name, storedUser.Password);
@@ -65,7 +62,7 @@ namespace TimesheetPlayground.Test.Integration.Service
         }
 
         [Fact]
-        public async void GetUserByNamePasswordAsync_InvalidUserNamePasswordPair_ReturnNull()
+        public async Task GetUserByNamePasswordAsync_InvalidUserNamePasswordPair_ReturnNull()
         {
             // arrange, act
             var actual = await userService.GetUserByNamePasswordAsync("INVALID", "INVALID");

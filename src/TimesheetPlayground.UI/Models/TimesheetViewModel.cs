@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TimesheetPlayground.UI.Models.DTO;
-using TimesheetPlayground.UI.Models.Enum;
 
 namespace TimesheetPlayground.UI.Models
 {
@@ -16,11 +11,11 @@ namespace TimesheetPlayground.UI.Models
 
         public TimesheetDO TimesheetDO { get; set; }
 
-        public List<TimesheetDO> AllUserTimesheetDOs { get; set; } = new List<TimesheetDO>();
+        public List<TimesheetDO> AllUserTimesheetDOs { get; set; } = [];
 
-        public List<ProjectDO> AllProjectDOs { get; set; } = new List<ProjectDO>();
+        public List<ProjectDO> AllProjectDOs { get; set; } = [];
 
-        public List<UserDO> Users { get; set; } = new List<UserDO>();
+        public List<UserDO> Users { get; set; } = [];
 
         public string ErrorMessage { get; set; }
 

@@ -13,11 +13,15 @@ namespace TimesheetPlayground.DAL.Entities
         }
 
         public int Id { get; set; }
+
         public int UserId { get; set; }
+
         public string Status { get; set; }
+
         public DateTime StartDate { get; set; }
 
         public virtual User User { get; set; }
+
         public virtual ICollection<WorkedHour> WorkedHours { get; set; }
     }
 }

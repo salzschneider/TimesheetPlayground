@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using TimesheetPlayground.UI.Models;
 using TimesheetPlayground.UI.Common;
@@ -53,7 +48,7 @@ namespace TimesheetPlayground.UI.Controllers
         {
             if (UserClaim.IsManager(User))
             {
-                ProjectViewModel responseProjectViewModel = new ProjectViewModel();
+                ProjectViewModel responseProjectViewModel = new();
                 bool HasError = true;
 
                 if (ModelState.IsValid)

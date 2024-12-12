@@ -4,7 +4,7 @@
 
 **3-Layer Architecture**
 
-- Data Access Layer: .NET Core 3.1 Project
+- Data Access Layer: .NET Core 8 Project
   - Data First approach
 - Business Logic Layer - integrated in UI project
 - User Interface Layer: ASP .NET Core Web Application - MVC
@@ -12,15 +12,15 @@
 
 **Test project**
 
-- XUnit 2.4
+- XUnit 2.9
 
 **Database**
-- MSSQL Server - Express 15.x
+- MSSQL Server - Express 16.x
 
 ## Required NuGet Packages
 
-- Entity Famework Core 5
-- Automapper 8.1
+- Entity Famework Core 9
+- Automapper 13
 
 ## Install
 - Create a new database (TimesheetPlayground) 

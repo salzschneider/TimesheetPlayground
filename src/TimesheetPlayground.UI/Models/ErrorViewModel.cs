@@ -1,5 +1,3 @@
-using System;
-
 namespace TimesheetPlayground.UI.Models
 {
     public class ErrorViewModel

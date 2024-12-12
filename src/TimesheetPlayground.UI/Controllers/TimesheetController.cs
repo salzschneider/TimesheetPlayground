@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using TimesheetPlayground.UI.Models;
 using TimesheetPlayground.UI.Common;
 using TimesheetPlayground.UI.BLL;
-using TimesheetPlayground.UI.Models.DTO;
 using TimesheetPlayground.UI.Models.Enum;
 
 namespace TimesheetPlayground.UI.Controllers
@@ -34,7 +31,7 @@ namespace TimesheetPlayground.UI.Controllers
             this.projectService = projectService;
         }
 
-        private object TimesheetIndexRouteValues(int timesheetId, int userId, int weekNumber)
+        private static object TimesheetIndexRouteValues(int timesheetId, int userId, int weekNumber)
         {
             return new
             {

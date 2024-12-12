@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using TimesheetPlayground.UI.Models.Enum;
+﻿using System.Collections.Generic;
 
 namespace TimesheetPlayground.UI.Common
 {
